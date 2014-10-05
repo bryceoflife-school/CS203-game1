@@ -68,18 +68,23 @@ class GameScene: SKScene {
     func setupGround() {
         let ground = SKSpriteNode(imageNamed: "ground")
         ground.size = CGSizeMake(self.frame.width, ground.frame.height / 2)
-        ground.anchorPoint = CGPointZero
-        ground.position = CGPointMake(0, 0)
+        ground.position = CGPointMake(self.frame.height, 10)
         ground.zPosition = -9
+        
+        ground.physicsBody = SKPhysicsBody(rectangleOfSize: ground.size)
+        ground.physicsBody?.dynamic = false
         self.addChild(ground)
     }
     
     func setupBox() {
         let box = SKSpriteNode(imageNamed: "box")
-        box.size = CGSizeMake(self.frame.width, self.frame.height)
+        box.size = CGSizeMake(box.size.width / 2, box.size.height / 2)
         box.anchorPoint = CGPointZero
-        box.position = CGPointMake((self.frame.width / 2 ) + (box.frame.width / 2), self.frame.height / 20)
+        box.position = CGPointMake((self.frame.width / 2 ), self.frame.height / 10)
         self.addChild(box)
+        box.physicsBody = SKPhysicsBody(rectangleOfSize: box.size)
+        box.physicsBody?.dynamic = false
+        
     }
     
     
