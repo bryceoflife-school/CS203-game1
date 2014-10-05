@@ -10,9 +10,19 @@ import SpriteKit
 
 // Object Variable
 var block: SKSpriteNode!
+var box: SKSpriteNode!
 
 // Random Variable
 var columnMultiplier: CGFloat!
+
+// Touch Object
+var currentNodeTouched: SKNode!
+
+//Contact Categories
+let characterCategory: UInt32 = 1 << 0
+let worldCategory: UInt32 = 1 << 1
+let wallCategory: UInt32 = 1 << 2
+let scoreCategory: UInt32 = 1 << 3
 
 class GameScene: SKScene {
     override func didMoveToView(view: SKView) {
@@ -77,35 +87,16 @@ class GameScene: SKScene {
     }
     
     func setupBox() {
-        let box = SKSpriteNode(imageNamed: "box")
+        box = SKSpriteNode(imageNamed: "box")
         box.size = CGSizeMake(box.size.width / 2, box.size.height / 2)
-        box.anchorPoint = CGPointZero
-        box.position = CGPointMake((self.frame.width / 2 ), self.frame.height / 10)
+        box.position = CGPointMake((self.frame.width / 2 ), self.frame.height / 5)
         self.addChild(box)
-        box.physicsBody = SKPhysicsBody(rectangleOfSize: box.size)
-        box.physicsBody?.dynamic = false
+        let boxTexture = SKTexture(imageNamed: "box")
+        box.physicsBody = SKPhysicsBody(texture: boxTexture, size: box.size)
+            box.physicsBody?.dynamic = false
+        box.name = "box"
         
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         /* Called when a touch begins */
@@ -114,11 +105,30 @@ class GameScene: SKScene {
         for touch: AnyObject in touches {
             let location = touch.locationInNode(self)
             
+            let time = NSTimeInterval(abs(location.x - box.position.x) * 0.001)
+            
+            if (location.x != box.position.x) {
+                box.runAction(SKAction.moveToX(location.x, duration: time))
+                
+            }
         }
     }
    
+    override func touchesMoved(touches: NSSet, withEvent event: UIEvent) {
+        for touch: AnyObject in touches {
+            let location = touch.locationInNode(self)
+            
+            let time = NSTimeInterval(abs(location.x - box.position.x) * 0.001)
+            
+            if (location.x != box.position.x) {
+                box.runAction(SKAction.moveToX(location.x, duration: time))
+            }
+        }
+    }
     
-    
+    override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
+        box.removeAllActions()
+    }
     
     
     
