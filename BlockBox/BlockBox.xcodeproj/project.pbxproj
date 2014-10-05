@@ -14,6 +14,11 @@
 		C874677A19DEE352000AEAF0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C874677919DEE352000AEAF0 /* Images.xcassets */; };
 		C874677D19DEE352000AEAF0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = C874677B19DEE352000AEAF0 /* LaunchScreen.xib */; };
 		C874678919DEE352000AEAF0 /* BlockBoxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C874678819DEE352000AEAF0 /* BlockBoxTests.swift */; };
+		C87467FF19E107B0000AEAF0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C87467FD19E107B0000AEAF0 /* Main.storyboard */; };
+		C874680419E10DE5000AEAF0 /* background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C874680019E10DE5000AEAF0 /* background@2x.png */; };
+		C874680519E10DE5000AEAF0 /* block@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C874680119E10DE5000AEAF0 /* block@2x.png */; };
+		C874680619E10DE5000AEAF0 /* box@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C874680219E10DE5000AEAF0 /* box@2x.png */; };
+		C874680719E10DE5000AEAF0 /* ground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C874680319E10DE5000AEAF0 /* ground@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +43,11 @@
 		C874678219DEE352000AEAF0 /* BlockBoxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BlockBoxTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C874678719DEE352000AEAF0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C874678819DEE352000AEAF0 /* BlockBoxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockBoxTests.swift; sourceTree = "<group>"; };
+		C87467FE19E107B0000AEAF0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		C874680019E10DE5000AEAF0 /* background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background@2x.png"; sourceTree = "<group>"; };
+		C874680119E10DE5000AEAF0 /* block@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "block@2x.png"; sourceTree = "<group>"; };
+		C874680219E10DE5000AEAF0 /* box@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "box@2x.png"; sourceTree = "<group>"; };
+		C874680319E10DE5000AEAF0 /* ground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ground@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +94,7 @@
 				C874677219DEE352000AEAF0 /* GameScene.swift */,
 				C874677419DEE352000AEAF0 /* GameViewController.swift */,
 				C874677919DEE352000AEAF0 /* Images.xcassets */,
+				C87467FD19E107B0000AEAF0 /* Main.storyboard */,
 				C874677B19DEE352000AEAF0 /* LaunchScreen.xib */,
 				C874676C19DEE352000AEAF0 /* Supporting Files */,
 			);
@@ -93,6 +104,10 @@
 		C874676C19DEE352000AEAF0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C874680019E10DE5000AEAF0 /* background@2x.png */,
+				C874680119E10DE5000AEAF0 /* block@2x.png */,
+				C874680219E10DE5000AEAF0 /* box@2x.png */,
+				C874680319E10DE5000AEAF0 /* ground@2x.png */,
 				C874676D19DEE352000AEAF0 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -196,7 +211,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				C874677D19DEE352000AEAF0 /* LaunchScreen.xib in Resources */,
+				C874680719E10DE5000AEAF0 /* ground@2x.png in Resources */,
+				C87467FF19E107B0000AEAF0 /* Main.storyboard in Resources */,
 				C874677A19DEE352000AEAF0 /* Images.xcassets in Resources */,
+				C874680419E10DE5000AEAF0 /* background@2x.png in Resources */,
+				C874680519E10DE5000AEAF0 /* block@2x.png in Resources */,
+				C874680619E10DE5000AEAF0 /* box@2x.png in Resources */,
 				C874677119DEE352000AEAF0 /* GameScene.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -246,6 +266,14 @@
 				C874677C19DEE352000AEAF0 /* Base */,
 			);
 			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+		C87467FD19E107B0000AEAF0 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C87467FE19E107B0000AEAF0 /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
