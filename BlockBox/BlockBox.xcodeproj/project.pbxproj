@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C86B46D119E2432800CD9705 /* box@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C86B46D019E2432800CD9705 /* box@2x.png */; };
 		C86B46D319E24D4700CD9705 /* life@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C86B46D219E24D4700CD9705 /* life@2x.png */; };
+		C86B46D519E2FAAD00CD9705 /* playAgain@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C86B46D419E2FAAD00CD9705 /* playAgain@2x.png */; };
 		C874676F19DEE352000AEAF0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C874676E19DEE352000AEAF0 /* AppDelegate.swift */; };
 		C874677119DEE352000AEAF0 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = C874677019DEE352000AEAF0 /* GameScene.sks */; };
 		C874677319DEE352000AEAF0 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C874677219DEE352000AEAF0 /* GameScene.swift */; };
@@ -36,6 +37,7 @@
 /* Begin PBXFileReference section */
 		C86B46D019E2432800CD9705 /* box@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "box@2x.png"; sourceTree = "<group>"; };
 		C86B46D219E24D4700CD9705 /* life@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "life@2x.png"; sourceTree = "<group>"; };
+		C86B46D419E2FAAD00CD9705 /* playAgain@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playAgain@2x.png"; sourceTree = "<group>"; };
 		C874676919DEE352000AEAF0 /* BlockBox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlockBox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C874676D19DEE352000AEAF0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C874676E19DEE352000AEAF0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 		C874676C19DEE352000AEAF0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C86B46D419E2FAAD00CD9705 /* playAgain@2x.png */,
 				C874680819E12B39000AEAF0 /* launchImage.png */,
 				C86B46D019E2432800CD9705 /* box@2x.png */,
 				C874680019E10DE5000AEAF0 /* background@2x.png */,
@@ -216,6 +219,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C86B46D519E2FAAD00CD9705 /* playAgain@2x.png in Resources */,
 				C874677D19DEE352000AEAF0 /* LaunchScreen.xib in Resources */,
 				C86B46D119E2432800CD9705 /* box@2x.png in Resources */,
 				C874680719E10DE5000AEAF0 /* ground@2x.png in Resources */,

@@ -13,10 +13,15 @@ import UIKit
 // Object Variable
 var block: SKSpriteNode!
 var box: SKSpriteNode!
-var scoreLabel: SKLabelNode!
 var heart1: SKSpriteNode!
 var heart2: SKSpriteNode!
 var heart3: SKSpriteNode!
+var playAgain: SKSpriteNode!
+var blockSet: SKNode!
+
+// Lables
+var scoreLabel: SKLabelNode!
+var highScoreLabel: SKLabelNode!
 
 // Random Variable
 var columnMultiplier: CGFloat!
@@ -27,13 +32,18 @@ var currentNodeTouched: SKNode!
 // GameState Variables
 var score = NSInteger()
 var lives = NSInteger()
-var gameWin: Bool!
-var gameLose: Bool!
+var highScore = NSInteger()
+var levelWin: Bool = false
+var gameLose: Bool = false
+var spawnTime: NSTimeInterval = 0.7
+var gravityValue: CGFloat = 1.5
+var scoreCounter: Int = 30
 
 //Contact Categories
 let blockCategory: UInt32 = 1 << 0
 let worldCategory: UInt32 = 1 << 1
 let boxCategory: UInt32 = 1 << 2
+let buttonCategory: UInt32 = 1 << 3
 
 // Function to input color as Hex
 extension UIColor {
@@ -47,23 +57,31 @@ extension UIColor {
     }
 }
 
+
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
         self.backgroundColor = UIColor.blackColor()
-        self.physicsWorld.gravity = CGVectorMake(0.0, -2)
+        self.physicsWorld.gravity = CGVectorMake(0.0, -gravityValue)
         self.physicsWorld.contactDelegate = self
         setupBackground()
         setupBlocks()
         setupGround()
         setupBox()
-        updateScore()
+        setupScore()
+        setupHighScore()
         setupHeart1()
         setupHeart2()
         setupHeart3()
         setupLives()
         
+        blockSet = SKNode()
+        self.addChild(blockSet)
+        
     }
+    
+    
     
     func setupBackground() {
         let background = SKSpriteNode(imageNamed: "background")
@@ -75,11 +93,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     func setupBlocks() {
+        
         let spawn = SKAction.runBlock { () -> Void in
             self.spawnBlocks()
         }
         
-        let delay = SKAction.waitForDuration(0.5)
+        let delay = SKAction.waitForDuration(spawnTime)
         
         let spawnThenDelay = SKAction.sequence([spawn, delay])
         
@@ -88,6 +107,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.runAction(spawnThenDelayForever)
     }
     
+    func IncreaseSpawnRate(){
+        if scoreCounter == 0 {
+            spawnTime = spawnTime - 0.1
+            gravityValue = gravityValue + 0.1
+//            setupBlocks()
+            scoreCounter = 30
+            
+            println("spawntime\(spawnTime)")
+        }
+    }
+    
+   
+    
     func spawnBlocks() {
         block = SKSpriteNode(imageNamed: "block")
         block.size = CGSizeMake((block.size.width / 2), (block.size.height / 2))
@@ -95,21 +127,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             columnMultiplier = (CGFloat(arc4random_uniform(100))) / 100
         } while(columnMultiplier <= 0.3 || columnMultiplier >= 0.7)
         
-        
-        println(columnMultiplier)
         block.position = CGPointMake((columnMultiplier * self.frame.width), (self.frame.height + block.size.height))
         block.physicsBody = SKPhysicsBody(rectangleOfSize: block.size)
         
         block.physicsBody?.categoryBitMask = blockCategory
         block.physicsBody?.contactTestBitMask = boxCategory | worldCategory
-        //          block.physicsBody?.collisionBitMask = worldCategory | blockCategory | boxCategory
-        //            block.physicsBody?.allowsRotation = false
+//          block.physicsBody?.collisionBitMask = worldCategory | blockCategory | boxCategory
+//            block.physicsBody?.allowsRotation = false
         block.name = "LiveBlock"
         block.physicsBody?.restitution = 0.01
-        
-        
-        
-        self.addChild(block)
+//        self.addChild(block)
+        blockSet.addChild(block)
         
     }
     
@@ -143,8 +171,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(box)
     }
     
+    func setupPlayAgain() {
+        playAgain = SKSpriteNode(imageNamed: "playAgain")
+        playAgain.size = CGSizeMake(playAgain.size.width / 2, playAgain.size.height / 2)
+        playAgain.position = CGPointMake(self.frame.width / 2, self.frame.height / 2)
+        playAgain.physicsBody = SKPhysicsBody(rectangleOfSize: playAgain.size)
+        playAgain.physicsBody?.dynamic = false
+        
+        playAgain.physicsBody?.categoryBitMask = buttonCategory
+        playAgain.physicsBody?.contactTestBitMask = blockCategory
+        playAgain.name = "playAgainButton"
+        
+        self.addChild(playAgain)
+    }
     
-    func updateScore() {
+    
+    func setupScore() {
         score = 0
         scoreLabel = SKLabelNode(fontNamed: "Helvetica")
         scoreLabel.fontColor = UIColor.blackColor()
@@ -153,6 +195,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.text = String(score)
         scoreLabel.zPosition = 100
         self.addChild(scoreLabel)
+    }
+    
+    func setupHighScore() {
+        if highScore <= score {
+            highScore = score
+        }
+        highScoreLabel = SKLabelNode(fontNamed: "Helvetica")
+        highScoreLabel.fontColor = UIColor.grayColor()
+        highScoreLabel.fontSize = 30
+        highScoreLabel.position = CGPointMake(CGRectGetMidX(self.frame), self.frame.height / 1.15)
+        highScoreLabel.text = String(highScore)
+        highScoreLabel.zPosition = 101
+        self.addChild(highScoreLabel)
+    }
+    
+    func updateHighScore() {
+        if highScore <= score {
+            highScore = score
+            highScoreLabel.text = String(highScore)
+        }
     }
     
     func setupLives(){
@@ -168,8 +230,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case 0:
             heart1.removeFromParent()
             gameLose = true
+            setupPlayAgain()
         default:
-            gameLose = false
+            break
         }
             println(lives)
         
@@ -197,25 +260,52 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(heart3)
     }
     
+    // Reset the game after loss
+    func resetScene() {
+        // Reposition Box
+        box.position = CGPointMake((self.frame.width / 2 ), self.frame.height / 5)
+        
+        // Clear blocks
+        blockSet.removeAllChildren()
+        playAgain.removeFromParent()
+        
+        
+        
+        // Reset score
+        score = 0
+        scoreLabel.text = String(score)
+        scoreCounter = 30
+        
+        // Reset lives
+        lives = 30
+        setupHeart1()
+        setupHeart2()
+        setupHeart3()
+        gameLose = false
+    }
+    
     func didBeginContact(contact: SKPhysicsContact) {
-        if ( contact.bodyA.categoryBitMask & boxCategory ) == boxCategory || ( contact.bodyB.categoryBitMask & boxCategory ) == boxCategory {
+        if (( contact.bodyA.categoryBitMask & boxCategory ) == boxCategory || ( contact.bodyB.categoryBitMask & boxCategory ) == boxCategory)
+            && (contact.bodyB.node?.frame.origin.y > contact.bodyA.node?.frame.minY && contact.bodyB.node?.frame.origin.y < contact.bodyA.node?.frame.maxY)
+            && (contact.bodyB.node?.frame.origin.x > contact.bodyA.node?.frame.minX && contact.bodyB.node?.frame.origin.x < contact.bodyA.node?.frame.maxX) {
             
             println("SCORE!")
             
-//            contact.bodyB.node?.physicsBody?.contactTestBitMask = worldCategory
-            let delay = SKAction.waitForDuration(0.25)
+            let delay = SKAction.waitForDuration(0.1)
             let deleteBlock = SKAction.removeFromParent()
-            let fadeAway = SKAction.fadeOutWithDuration(0.25)
+            let fadeAway = SKAction.fadeOutWithDuration(0.1)
             let delayThenFade = SKAction.sequence([delay,fadeAway])
             let fadeThenDelete = SKAction.sequence([delayThenFade, deleteBlock])
             
-            if contact.bodyB.node?.name == "LiveBlock" {
+            if ((contact.bodyB.node?.name == "LiveBlock") && (gameLose == false)) {
                 score = score + 1
                 scoreLabel.text = String(score)
+                updateHighScore()
+                scoreCounter = scoreCounter - 1
+                IncreaseSpawnRate()
                 contact.bodyB.node?.name = "DeadBlock"
                 //            println(score)
             }
-            
             contact.bodyB.node?.runAction(fadeThenDelete)
         } else if (contact.bodyA.categoryBitMask & worldCategory) == worldCategory || (contact.bodyB.categoryBitMask & worldCategory) == worldCategory {
             
@@ -228,13 +318,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let delayThenFade = SKAction.sequence([delay,fadeAway])
             let colorFadeThenDelete = SKAction.sequence([colorChange,delayThenFade, deleteBlock])
             
-            lives = lives - 1
-            updateLives()
-            
-           
-            
+            if contact.bodyB.node?.name == "LiveBlock" {
+                lives = lives - 1
+                updateLives()
+                contact.bodyB.node?.name = "DeadBlock"
+            }
             contact.bodyB.node?.runAction(colorFadeThenDelete)
 
+        } else if (contact.bodyA.contactTestBitMask & buttonCategory) == buttonCategory || (contact.bodyB.contactTestBitMask & buttonCategory) == buttonCategory {
+            let delay = SKAction.waitForDuration(5)
+            let colorChange = SKAction.colorizeWithColor(UIColor(rgb: 0x222222), colorBlendFactor: 1.0, duration: 0.5)
+            
+            let deleteBlock = SKAction.removeFromParent()
+            let fadeAway = SKAction.fadeOutWithDuration(0.25)
+            let delayThenFade = SKAction.sequence([delay,fadeAway])
+            let colorFadeThenDelete = SKAction.sequence([colorChange,delayThenFade, deleteBlock])
+            contact.bodyB.node?.runAction(colorFadeThenDelete)
         }
     
     }
@@ -245,14 +344,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         for touch: AnyObject in touches {
-            let location = touch.locationInNode(self)
+            let location = touch.locationInNode(self) as CGPoint
+            var node: SKNode = self.nodeAtPoint(location)
             
             let time = NSTimeInterval(abs(location.x - box.position.x) * 0.0009)
             
             if (location.x != box.position.x) {
                 box.runAction(SKAction.moveToX(location.x, duration: time))
-                
             }
+            if (node.name == "playAgainButton"){
+                resetScene()
+            }
+        
         }
     }
     
@@ -274,27 +377,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
+        self.physicsWorld.gravity = CGVectorMake(0.0, -gravityValue)
     }
 }
