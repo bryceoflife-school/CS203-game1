@@ -11,6 +11,7 @@ import Foundation
 import UIKit
 
 // Object Variable
+var ground: SKSpriteNode!
 var block: SKSpriteNode!
 var box: SKSpriteNode!
 var heart1: SKSpriteNode!
@@ -86,13 +87,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    func accessBlocks(){
+        println(blockSet?.children.first?.position)
+    }
     
+    func testThatBlockisDead(){
+        var shouldBeTrue = false
+        if blockHasSpawned != nil{
+            if blockSet.children.first?.name == "DeadBlock" && blockSet.children.first?.frame.minY <= ground.frame.height + 5{
+                shouldBeTrue = true
+                println( "Dead Block is on Ground")
+            } else if blockSet.children.first?.name == "DeadBlock" && blockSet.children.first?.frame.minY > ground.frame.height + 5{
+                shouldBeTrue = false
+                println(blockSet.children.first?.frame.minY)
+                println( "Dead Block is not on Ground")
+            } else if blockSet.children.first?.name != "DeadBlock" && blockSet.children.first?.frame.minY > ground.frame.height + 5 {
+                shouldBeTrue = true
+                println("Live block is not on the Ground")
+            } else {
+                shouldBeTrue = false
+                println("Live block is on the Ground")
+            }
+        }
+    }
     
+        
+        
     func setupBackground() {
         let background = SKSpriteNode(imageNamed: "background")
         background.position = CGPointMake(self.frame.width / 2, self.frame.height / 2)
         background.size = CGSizeMake(self.frame.width, self.frame.height)
-        background.zPosition = -10
+        background.zPosition = -100
         self.addChild(background)
     }
     
@@ -141,13 +166,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         block.physicsBody?.restitution = 0.01
 //        self.addChild(block)
         blockSet.addChild(block)
+        accessBlocks()
         blockHasSpawned = true
     }
     
     func setupGround() {
-        let ground = SKSpriteNode(imageNamed: "ground")
+        ground = SKSpriteNode(imageNamed: "ground")
         ground.size = CGSizeMake(self.frame.width, ground.frame.height / 2)
-        ground.position = CGPointMake(self.frame.height, 10)
+        ground.position = CGPointMake(self.frame.width / 2, 10)
         ground.zPosition = -9
         ground.physicsBody = SKPhysicsBody(rectangleOfSize: ground.size)
         ground.physicsBody?.dynamic = false
@@ -205,11 +231,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         autoPlayButton = SKSpriteNode(imageNamed: "autoPlay")
         autoPlayButton.size = CGSizeMake(autoPlayButton.size.width, autoPlayButton.size.height)
         autoPlayButton.position = CGPointMake(self.frame.width / 1.5, self.frame.height / 9)
-        autoPlayButton.physicsBody = SKPhysicsBody(rectangleOfSize: autoPlayButton.size)
-        autoPlayButton.physicsBody?.dynamic = false
-        
-        autoPlayButton.physicsBody?.categoryBitMask = buttonCategory
-        autoPlayButton.physicsBody?.contactTestBitMask = blockCategory
+        autoPlayButton.zPosition = -50
+
         autoPlayButton.name = "autoPlayButton"
         
         self.addChild(autoPlayButton)
@@ -424,5 +447,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Called before each frame is rendered */
         self.physicsWorld.gravity = CGVectorMake(0.0, -gravityValue)
         autoMoveBox()
+        testThatBlockisDead()
+        
     }
 }
