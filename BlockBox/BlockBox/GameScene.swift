@@ -38,6 +38,9 @@ var gameLose: Bool = false
 var spawnTime: NSTimeInterval = 0.7
 var gravityValue: CGFloat = 1.5
 var scoreCounter: Int = 30
+var autoPlay: Bool = true
+var blockHasSpawned: Bool!
+var location: CGPoint!
 
 //Contact Categories
 let blockCategory: UInt32 = 1 << 0
@@ -74,6 +77,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupHeart2()
         setupHeart3()
         setupLives()
+        
         
         blockSet = SKNode()
         self.addChild(blockSet)
@@ -135,7 +139,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         block.physicsBody?.restitution = 0.01
 //        self.addChild(block)
         blockSet.addChild(block)
-        
+        blockHasSpawned = true
     }
     
     func setupGround() {
@@ -167,6 +171,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         box.physicsBody?.collisionBitMask = blockCategory
         self.addChild(box)
         return box.position
+    }
+    
+    func autoMoveBox() {
+        if autoPlay && blockHasSpawned != nil {
+            var blockPosition = block.position.x
+            let moveDelay = SKAction.waitForDuration(1.8)
+            let move = SKAction.moveToX(blockPosition, duration: 0.1)
+            let moveDelayThenGo = SKAction.sequence([moveDelay,move])
+            box.runAction(moveDelayThenGo)
+           
+            println(box.position.y)
+            println("move box")
+        }
     }
 
     
@@ -343,7 +360,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         for touch: AnyObject in touches {
-            let location = touch.locationInNode(self) as CGPoint
+            location = touch.locationInNode(self) as CGPoint
             var node: SKNode = self.nodeAtPoint(location)
             
             let time = NSTimeInterval(abs(location.x - box.position.x) * 0.0009)
@@ -379,5 +396,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
         self.physicsWorld.gravity = CGVectorMake(0.0, -gravityValue)
+        autoMoveBox()
     }
 }
