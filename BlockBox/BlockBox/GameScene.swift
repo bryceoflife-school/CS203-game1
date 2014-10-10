@@ -17,6 +17,7 @@ var heart1: SKSpriteNode!
 var heart2: SKSpriteNode!
 var heart3: SKSpriteNode!
 var playAgain: SKSpriteNode!
+var autoPlayButton: SKSpriteNode!
 var blockSet: SKNode!
 
 // Lables
@@ -38,7 +39,7 @@ var gameLose: Bool = false
 var spawnTime: NSTimeInterval = 0.7
 var gravityValue: CGFloat = 1.5
 var scoreCounter: Int = 30
-var autoPlay: Bool = true
+var autoPlay: Bool = false
 var blockHasSpawned: Bool!
 var location: CGPoint!
 
@@ -77,6 +78,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupHeart2()
         setupHeart3()
         setupLives()
+        setupAutoPlayButton()
         
         
         blockSet = SKNode()
@@ -117,7 +119,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //            setupBlocks()
             scoreCounter = 30
             
-            println("spawntime\(spawnTime)")
+//            println("spawntime\(spawnTime)")
         }
     }
     
@@ -180,9 +182,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let move = SKAction.moveToX(blockPosition, duration: 0.1)
             let moveDelayThenGo = SKAction.sequence([moveDelay,move])
             box.runAction(moveDelayThenGo)
-           
-            println(box.position.y)
-            println("move box")
+
         }
     }
 
@@ -200,6 +200,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.addChild(playAgain)
     }
+    
+    func setupAutoPlayButton() {
+        autoPlayButton = SKSpriteNode(imageNamed: "autoPlay")
+        autoPlayButton.size = CGSizeMake(autoPlayButton.size.width, autoPlayButton.size.height)
+        autoPlayButton.position = CGPointMake(self.frame.width / 1.5, self.frame.height / 9)
+        autoPlayButton.physicsBody = SKPhysicsBody(rectangleOfSize: autoPlayButton.size)
+        autoPlayButton.physicsBody?.dynamic = false
+        
+        autoPlayButton.physicsBody?.categoryBitMask = buttonCategory
+        autoPlayButton.physicsBody?.contactTestBitMask = blockCategory
+        autoPlayButton.name = "autoPlayButton"
+        
+        self.addChild(autoPlayButton)
+    }
+
     
     func setupScore() {
         score = 0
@@ -249,7 +264,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         default:
             break
         }
-            println(lives)
+//            println(lives)
         
     }
     
@@ -286,6 +301,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // Reset World
         gravityValue = 1.5
+        autoPlay = false
+        
         
         
         // Reset score
@@ -306,7 +323,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             && (contact.bodyB.node?.frame.origin.y > contact.bodyA.node?.frame.minY && contact.bodyB.node?.frame.origin.y < contact.bodyA.node?.frame.maxY)
             && (contact.bodyB.node?.frame.origin.x > contact.bodyA.node?.frame.minX && contact.bodyB.node?.frame.origin.x < contact.bodyA.node?.frame.maxX) {
             
-            println("SCORE!")
+//            println("SCORE!")
             
             let delay = SKAction.waitForDuration(0.1)
             let deleteBlock = SKAction.removeFromParent()
@@ -326,7 +343,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             contact.bodyB.node?.runAction(fadeThenDelete)
         } else if (contact.bodyA.categoryBitMask & worldCategory) == worldCategory || (contact.bodyB.categoryBitMask & worldCategory) == worldCategory {
             
-            println("dead")
+//            println("dead")
             let delay = SKAction.waitForDuration(5)
             let colorChange = SKAction.colorizeWithColor(UIColor(rgb: 0x222222), colorBlendFactor: 1.0, duration: 0.5)
             
@@ -370,6 +387,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             if (node.name == "playAgainButton"){
                 resetScene()
+            }
+            
+            if (node.name == "autoPlayButton"){
+                if autoPlay == false {
+                    autoPlay = true
+                    println(autoPlay)
+                } else {
+                    autoPlay = false
+                    println(autoPlay)
+                }
             }
         
         }
