@@ -10,6 +10,8 @@
 		C86B46D119E2432800CD9705 /* box@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C86B46D019E2432800CD9705 /* box@2x.png */; };
 		C86B46D319E24D4700CD9705 /* life@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C86B46D219E24D4700CD9705 /* life@2x.png */; };
 		C86B46D519E2FAAD00CD9705 /* playAgain@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C86B46D419E2FAAD00CD9705 /* playAgain@2x.png */; };
+		C86B478C19E7886100CD9705 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C874676E19DEE352000AEAF0 /* AppDelegate.swift */; };
+		C86B478E19E788EB00CD9705 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C874677219DEE352000AEAF0 /* GameScene.swift */; };
 		C874676F19DEE352000AEAF0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C874676E19DEE352000AEAF0 /* AppDelegate.swift */; };
 		C874677119DEE352000AEAF0 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = C874677019DEE352000AEAF0 /* GameScene.sks */; };
 		C874677319DEE352000AEAF0 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C874677219DEE352000AEAF0 /* GameScene.swift */; };
@@ -25,6 +27,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		C86B46D619E75C7600CD9705 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C874676119DEE352000AEAF0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C874676819DEE352000AEAF0;
+			remoteInfo = BlockBox;
+		};
 		C874678319DEE352000AEAF0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C874676119DEE352000AEAF0 /* Project object */;
@@ -171,6 +180,7 @@
 			);
 			dependencies = (
 				C874678419DEE352000AEAF0 /* PBXTargetDependency */,
+				C86B46D719E75C7600CD9705 /* PBXTargetDependency */,
 			);
 			name = BlockBoxTests;
 			productName = BlockBoxTests;
@@ -257,6 +267,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C86B478C19E7886100CD9705 /* AppDelegate.swift in Sources */,
+				C86B478E19E788EB00CD9705 /* GameScene.swift in Sources */,
 				C874678919DEE352000AEAF0 /* BlockBoxTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -264,6 +276,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		C86B46D719E75C7600CD9705 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C874676819DEE352000AEAF0 /* BlockBox */;
+			targetProxy = C86B46D619E75C7600CD9705 /* PBXContainerItemProxy */;
+		};
 		C874678419DEE352000AEAF0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C874676819DEE352000AEAF0 /* BlockBox */;
@@ -391,7 +408,6 @@
 		C874679019DEE352000AEAF0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -410,7 +426,6 @@
 		C874679119DEE352000AEAF0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",

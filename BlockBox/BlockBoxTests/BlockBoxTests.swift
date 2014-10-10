@@ -8,6 +8,7 @@
 
 import UIKit
 import XCTest
+import BlockBox
 
 class BlockBoxTests: XCTestCase {
     
@@ -20,6 +21,13 @@ class BlockBoxTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
+    
+    //Test that scene loads
+    func testThatSceneLoads(){
+        let gameScene = GameScene()
+        XCTAssertNotNil(gameScene.scene, "Scene did not load")
+    }
+    
     
     func testExample() {
         // This is an example of a functional test case.

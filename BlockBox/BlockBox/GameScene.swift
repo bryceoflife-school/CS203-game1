@@ -58,7 +58,6 @@ extension UIColor {
 }
 
 
-
 class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
@@ -118,8 +117,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-   
-    
     func spawnBlocks() {
         block = SKSpriteNode(imageNamed: "block")
         block.size = CGSizeMake((block.size.width / 2), (block.size.height / 2))
@@ -156,10 +153,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(ground)
     }
     
-    func setupBox() {
+    func setupBox() -> CGPoint{
         box = SKSpriteNode(imageNamed: "box")
         box.size = CGSizeMake(box.size.width / 2, box.size.height / 2)
-        box.position = CGPointMake((self.frame.width / 2 ), self.frame.height / 5)
+        box.position = CGPointMake(self.frame.width / 2 , self.frame.height / 5)
         let boxTexture = SKTexture(imageNamed: "box")
         box.physicsBody = SKPhysicsBody(texture: boxTexture, size: box.size)
         box.physicsBody?.dynamic = false
@@ -169,7 +166,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         box.physicsBody?.contactTestBitMask = blockCategory
         box.physicsBody?.collisionBitMask = blockCategory
         self.addChild(box)
+        return box.position
     }
+
     
     func setupPlayAgain() {
         playAgain = SKSpriteNode(imageNamed: "playAgain")
@@ -184,7 +183,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.addChild(playAgain)
     }
-    
     
     func setupScore() {
         score = 0
@@ -269,6 +267,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         blockSet.removeAllChildren()
         playAgain.removeFromParent()
         
+        // Reset World
+        gravityValue = 1.5
         
         
         // Reset score
@@ -337,7 +337,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     
     }
-    
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         /* Called when a touch begins */

@@ -51,6 +51,11 @@
                BlueprintName = "BlockBoxTests"
                ReferencedContainer = "container:BlockBox.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "BlockBoxTests/testEqual()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>
