@@ -176,7 +176,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 shouldBeTrue = true
                 println("Pass: 10 blocks hit ground. Lost respective live")
             }
-            
+                
             else if groundTouchCount >= 30 && !lostLife1{
                 shouldBeTrue = false
                 println("Fail: 30 blocks hit ground. Did not lose respective live")
@@ -187,7 +187,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 shouldBeTrue = false
                 println("Fail: 10 blocks hit ground. Did not lose respective live")
             }
-            
+                
             else if groundTouchCount < 30 && lostLife1{
                 shouldBeTrue = false
                 println("Fail: 30 blocks did not hit ground. Lost respective live")
@@ -197,7 +197,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             } else if groundTouchCount < 10 && lostLife3{
                 shouldBeTrue = false
                 println("Fail: 10 blocks hit did not ground. Lost respective live")
-            
+                
             }
             else if groundTouchCount < 10 && !lostLife1{
                 shouldBeTrue = true
@@ -213,9 +213,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         return shouldBeTrue
     }
+   
+    func testThatHighScoreisMax() -> Bool{
+        shouldBeTrue = false
+        if blockHasSpawned != nil{
+            if highScore >= score {
+                shouldBeTrue = true
+                println("Pass: High score is greater or equal to current score")
+            } else {
+                println("Fail: High score is not so high.")
+            }
+            
+        }
+        return shouldBeTrue
+    }
+    
+    
+    func testThat() -> Bool{
+        shouldBeTrue = false
+        if blockHasSpawned != nil{
+            
+        }
+        return shouldBeTrue
+    }
+    
+    
 
-        
-        
+    
+    
     func setupBackground() {
         let background = SKSpriteNode(imageNamed: "background")
         background.position = CGPointMake(self.frame.width / 2, self.frame.height / 2)
@@ -244,10 +269,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if scoreCounter == 0 {
             spawnTime = spawnTime - 0.1
             gravityValue = gravityValue + 0.1
-//            setupBlocks()
             scoreCounter = 30
-            
-//            println("spawntime\(spawnTime)")
         }
     }
     
@@ -316,10 +338,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 box.runAction(moveDelayThenGo)
 
             }
-            testThatBlockisDead()
-            testThatBlockGeneratesWithinFrame()
-            testThat30BlocksIsGameOver()
-            testThat10BlocksIsLoseLife()
+            // Run Tests
+//            testThatBlockisDead()
+//            testThatBlockGeneratesWithinFrame()
+//            testThat30BlocksIsGameOver()
+//            testThat10BlocksIsLoseLife()
+            testThatHighScoreisMax()
+//            testThatCaughtBlockIncrementsPoints()
 
         }
     }
@@ -478,7 +503,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 updateHighScore()
                 scoreCounter = scoreCounter - 1
                 IncreaseSpawnRate()
-               // contact.bodyB.node?.name = "DeadBlock"
+                contact.bodyB.node?.name = "CaughtBlock"
                 //            println(score)
             }
             contact.bodyB.node?.runAction(fadeThenDelete)
@@ -524,13 +549,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             let time = NSTimeInterval(abs(location.x - box.position.x) * 0.0009)
             
-            if (location.x != box.position.x) {
-                box.runAction(SKAction.moveToX(location.x, duration: time))
-            }
-            if (node.name == "playAgainButton"){
-                resetScene()
-            }
-            
             if (node.name == "autoPlayButton"){
                 if autoPlay == false {
                     autoPlay = true
@@ -540,7 +558,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     println(autoPlay)
                 }
             }
-        
+            
+            if (location.x != box.position.x) {
+                box.runAction(SKAction.moveToX(location.x, duration: time))
+            }
+            if (node.name == "playAgainButton"){
+                resetScene()
+            }
+            
+            
         }
     }
     
@@ -566,6 +592,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Called before each frame is rendered */
         self.physicsWorld.gravity = CGVectorMake(0.0, -gravityValue)
         autoMoveBox()
+
         
         
     }
