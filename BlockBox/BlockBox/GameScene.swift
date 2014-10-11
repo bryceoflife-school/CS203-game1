@@ -229,6 +229,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     
+    func testThatBoxMovesToTouch() -> Bool{
+        shouldBeTrue = false
+        if location.x == box.position.x {
+            println("Box moves to finger")
+            
+        }
+        return shouldBeTrue
+    }
+    
     func testThat() -> Bool{
         shouldBeTrue = false
         if blockHasSpawned != nil{
@@ -236,6 +245,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         return shouldBeTrue
     }
+
     
     
 
@@ -345,6 +355,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //            testThat10BlocksIsLoseLife()
             testThatHighScoreisMax()
 //            testThatCaughtBlockIncrementsPoints()
+            testThatBoxMovesToTouch()
 
         }
     }
