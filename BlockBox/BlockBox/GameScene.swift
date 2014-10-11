@@ -44,6 +44,13 @@ var autoPlay: Bool = false
 var blockHasSpawned: Bool!
 var location: CGPoint!
 
+//Testing Variables
+var shouldBeTrue = false
+var groundTouchCount = 0
+var lostLife1 = false
+var lostLife2 = false
+var lostLife3 = false
+
 //Contact Categories
 let blockCategory: UInt32 = 1 << 0
 let worldCategory: UInt32 = 1 << 1
@@ -87,30 +94,126 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
-    func accessBlocks(){
-        println(blockSet?.children.first?.position)
-    }
+//    func accessBlocks(){
+//        println(blockSet?.children.first?.position)
+//    }
     
-    func testThatBlockisDead(){
-        var shouldBeTrue = false
+    
+    // Tests
+    
+    func testThatBlockisDead() -> Bool{
+        shouldBeTrue = false
         if blockHasSpawned != nil{
             if blockSet.children.first?.name == "DeadBlock" && blockSet.children.first?.frame.minY <= ground.frame.height + 5{
                 shouldBeTrue = true
-                println( "Dead Block is on Ground")
+                println( "Pass: Dead Block is on Ground")
             } else if blockSet.children.first?.name == "DeadBlock" && blockSet.children.first?.frame.minY > ground.frame.height + 5{
                 shouldBeTrue = false
                 println(blockSet.children.first?.frame.minY)
-                println( "Dead Block is not on Ground")
+                println( "Fail: Dead Block is not on Ground")
             } else if blockSet.children.first?.name != "DeadBlock" && blockSet.children.first?.frame.minY > ground.frame.height + 5 {
                 shouldBeTrue = true
-                println("Live block is not on the Ground")
+                println("Pass: Live block is not on the Ground")
             } else {
                 shouldBeTrue = false
-                println("Live block is on the Ground")
+                println("Fail: Live block is on the Ground")
             }
         }
+        return shouldBeTrue
     }
     
+    func testThatBlockGeneratesWithinFrame() -> Bool{
+        shouldBeTrue = false
+        if blockHasSpawned != nil{
+            if blockSet.children.last?.position.x > self.frame.minX && blockSet.children.last?.position.x < self.frame.maxX {
+                shouldBeTrue = true
+                println("Pass: Block is generated within the frame")
+            } else {
+                shouldBeTrue = false
+                println("Fail: Block is not within the frame")
+            }
+        }
+        return shouldBeTrue
+    }
+
+    func testThat30BlocksIsGameOver() -> Bool{
+        shouldBeTrue = false
+        if blockHasSpawned != nil{
+            if blockSet.children.first?.name == "DeadBlock"{
+            }
+            if groundTouchCount == 30 && gameLose == true {
+                shouldBeTrue = true
+                println("Pass: Thirty blocks hit and game is over")
+            } else if groundTouchCount == 30 && gameLose == false {
+                shouldBeTrue = false
+                println("Fail: Thirty blocks hit and game is not over")
+            } else if groundTouchCount < 30 && gameLose == true {
+                shouldBeTrue = false
+                println("Fail: Less than thirty blocks hit and game is over")
+            } else if groundTouchCount < 30 && gameLose == false {
+                shouldBeTrue = true
+                println("Pass: Less than thirty blocks hit and game is not over")
+            } else {
+                // game is not over
+            }
+        
+        }
+        return shouldBeTrue
+    }
+    
+    func testThat10BlocksIsLoseLife() -> Bool{
+        shouldBeTrue = false
+        if blockHasSpawned != nil{
+            if blockSet.children.first?.name == "DeadBlock"{
+            }
+            if groundTouchCount >= 30 && lostLife1{
+                shouldBeTrue = true
+                println("Pass: 30 blocks hit ground. Lost respective live")
+            } else if groundTouchCount >= 20 && lostLife2{
+                shouldBeTrue = true
+                println("Pass: 20 blocks hit ground. Lost respective live")
+            } else if groundTouchCount >= 10 && lostLife3{
+                shouldBeTrue = true
+                println("Pass: 10 blocks hit ground. Lost respective live")
+            }
+            
+            else if groundTouchCount >= 30 && !lostLife1{
+                shouldBeTrue = false
+                println("Fail: 30 blocks hit ground. Did not lose respective live")
+            } else if groundTouchCount >= 20 && !lostLife2{
+                shouldBeTrue = false
+                println("Fail: 20 blocks hit ground. Did not lose respective live")
+            } else if groundTouchCount >= 10 && !lostLife3{
+                shouldBeTrue = false
+                println("Fail: 10 blocks hit ground. Did not lose respective live")
+            }
+            
+            else if groundTouchCount < 30 && lostLife1{
+                shouldBeTrue = false
+                println("Fail: 30 blocks did not hit ground. Lost respective live")
+            } else if groundTouchCount < 20 && lostLife2{
+                shouldBeTrue = false
+                println("Fail: 20 blocks hit did not ground. Lost respective live")
+            } else if groundTouchCount < 10 && lostLife3{
+                shouldBeTrue = false
+                println("Fail: 10 blocks hit did not ground. Lost respective live")
+            
+            }
+            else if groundTouchCount < 10 && !lostLife1{
+                shouldBeTrue = true
+                println("Pass: 10 blocks did not hit ground. Did not lose respective live")
+            } else if groundTouchCount < 20 && !lostLife2{
+                shouldBeTrue = true
+                println("Pass: 20 blocks hit did not ground. Did not lose respective live")
+            } else if groundTouchCount < 30 && !lostLife3{
+                shouldBeTrue = true
+                println("Pass: 30 blocks hit did not ground. Did not lose respective live")
+            }
+            
+        }
+        return shouldBeTrue
+    }
+
         
         
     func setupBackground() {
@@ -166,7 +269,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         block.physicsBody?.restitution = 0.01
 //        self.addChild(block)
         blockSet.addChild(block)
-        accessBlocks()
+//        accessBlocks()
         blockHasSpawned = true
     }
     
@@ -203,11 +306,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func autoMoveBox() {
         if autoPlay && blockHasSpawned != nil {
+            // human error addition
+            var randomly = (Int(arc4random_uniform(50)))
             var blockPosition = block.position.x
-            let moveDelay = SKAction.waitForDuration(1.8)
-            let move = SKAction.moveToX(blockPosition, duration: 0.1)
-            let moveDelayThenGo = SKAction.sequence([moveDelay,move])
-            box.runAction(moveDelayThenGo)
+            if randomly == 1 {
+                let moveDelay = SKAction.waitForDuration(1.8)
+                let move = SKAction.moveToX(blockPosition, duration: 0.1)
+                let moveDelayThenGo = SKAction.sequence([moveDelay,move])
+                box.runAction(moveDelayThenGo)
+
+            }
+            testThatBlockisDead()
+            testThatBlockGeneratesWithinFrame()
+            testThat30BlocksIsGameOver()
+            testThat10BlocksIsLoseLife()
 
         }
     }
@@ -278,11 +390,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         switch lives {
         case 20:
             heart3.removeFromParent()
+            lostLife3 = true
         case 10:
             heart2.removeFromParent()
+            lostLife2 = true
         case 0:
             heart1.removeFromParent()
             gameLose = true
+            lostLife1 = true
             setupPlayAgain()
         default:
             break
@@ -296,6 +411,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         heart1 = SKSpriteNode(imageNamed: "life")
         heart1.size = CGSizeMake(heart1.size.width / 2, heart1.size.height / 2)
         heart1.position = CGPointMake(self.frame.width / 3, self.frame.height / 1.07)
+        heart1.name = "heart1"
         self.addChild(heart1)
     }
     
@@ -303,6 +419,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         heart2 = SKSpriteNode(imageNamed: "life")
         heart2.size = CGSizeMake(heart2.size.width / 2, heart2.size.height / 2)
         heart2.position = CGPointMake(self.frame.width / 2.7, self.frame.height / 1.07)
+        heart2.name = "heart2"
         self.addChild(heart2)
     }
     
@@ -310,6 +427,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         heart3 = SKSpriteNode(imageNamed: "life")
         heart3.size = CGSizeMake(heart3.size.width / 2, heart3.size.height / 2)
         heart3.position = CGPointMake(self.frame.width / 2.45, self.frame.height / 1.07)
+        heart3.name = "heart3"
         self.addChild(heart3)
     }
     
@@ -360,7 +478,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 updateHighScore()
                 scoreCounter = scoreCounter - 1
                 IncreaseSpawnRate()
-                contact.bodyB.node?.name = "DeadBlock"
+               // contact.bodyB.node?.name = "DeadBlock"
                 //            println(score)
             }
             contact.bodyB.node?.runAction(fadeThenDelete)
@@ -378,6 +496,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if contact.bodyB.node?.name == "LiveBlock" {
                 lives = lives - 1
                 updateLives()
+                groundTouchCount++
                 contact.bodyB.node?.name = "DeadBlock"
             }
             contact.bodyB.node?.runAction(colorFadeThenDelete)
@@ -447,7 +566,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Called before each frame is rendered */
         self.physicsWorld.gravity = CGVectorMake(0.0, -gravityValue)
         autoMoveBox()
-        testThatBlockisDead()
+        
         
     }
 }
