@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C815E51319EAE49E006CFB44 /* antiBlock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C815E51219EAE49E006CFB44 /* antiBlock@2x.png */; };
 		C858EA0B19E7A4A40095C58B /* autoPlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C858EA0A19E7A4A40095C58B /* autoPlay@2x.png */; };
 		C86B46D119E2432800CD9705 /* box@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C86B46D019E2432800CD9705 /* box@2x.png */; };
 		C86B46D319E24D4700CD9705 /* life@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C86B46D219E24D4700CD9705 /* life@2x.png */; };
@@ -45,6 +46,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C815E51219EAE49E006CFB44 /* antiBlock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "antiBlock@2x.png"; sourceTree = "<group>"; };
 		C858EA0A19E7A4A40095C58B /* autoPlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "autoPlay@2x.png"; sourceTree = "<group>"; };
 		C86B46D019E2432800CD9705 /* box@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "box@2x.png"; sourceTree = "<group>"; };
 		C86B46D219E24D4700CD9705 /* life@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "life@2x.png"; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 		C874676C19DEE352000AEAF0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C815E51219EAE49E006CFB44 /* antiBlock@2x.png */,
 				C858EA0A19E7A4A40095C58B /* autoPlay@2x.png */,
 				C86B46D419E2FAAD00CD9705 /* playAgain@2x.png */,
 				C874680819E12B39000AEAF0 /* launchImage.png */,
@@ -236,6 +239,7 @@
 				C874677D19DEE352000AEAF0 /* LaunchScreen.xib in Resources */,
 				C86B46D119E2432800CD9705 /* box@2x.png in Resources */,
 				C858EA0B19E7A4A40095C58B /* autoPlay@2x.png in Resources */,
+				C815E51319EAE49E006CFB44 /* antiBlock@2x.png in Resources */,
 				C874680719E10DE5000AEAF0 /* ground@2x.png in Resources */,
 				C87467FF19E107B0000AEAF0 /* Main.storyboard in Resources */,
 				C874680919E12B39000AEAF0 /* launchImage.png in Resources */,

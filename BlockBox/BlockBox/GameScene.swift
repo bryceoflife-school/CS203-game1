@@ -13,6 +13,7 @@ import UIKit
 // Object Variable
 var ground: SKSpriteNode!
 var block: SKSpriteNode!
+var antiBlock: SKSpriteNode!
 var box: SKSpriteNode!
 var heart1: SKSpriteNode!
 var heart2: SKSpriteNode!
@@ -20,6 +21,8 @@ var heart3: SKSpriteNode!
 var playAgain: SKSpriteNode!
 var autoPlayButton: SKSpriteNode!
 var blockSet: SKNode!
+var antiBlockSet: SKNode!
+var randomly = 0
 
 // Lables
 var scoreLabel: SKLabelNode!
@@ -37,11 +40,11 @@ var lives = NSInteger()
 var highScore = NSInteger()
 var levelWin: Bool = false
 var gameLose: Bool = false
-var spawnTime: NSTimeInterval = 0.7
 var gravityValue: CGFloat = 1.5
 var scoreCounter: Int = 30
 var autoPlay: Bool = false
 var blockHasSpawned: Bool!
+var antiBlockHasSpawned: Bool!
 var location: CGPoint!
 
 //Testing Variables
@@ -77,7 +80,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.gravity = CGVectorMake(0.0, -gravityValue)
         self.physicsWorld.contactDelegate = self
         setupBackground()
-        setupBlocks()
+  
         setupGround()
         setupBox()
         setupScore()
@@ -87,17 +90,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupHeart3()
         setupLives()
         setupAutoPlayButton()
+        setupBlocks()
         
+
         
         blockSet = SKNode()
         self.addChild(blockSet)
+        antiBlockSet = SKNode()
+        self.addChild(antiBlockSet)
         
     }
-    
-//    func accessBlocks(){
-//        println(blockSet?.children.first?.position)
-//    }
-    
+
     
     // Tests
     
@@ -228,7 +231,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return shouldBeTrue
     }
     
-    
     func testThatBoxMovesToTouch() -> Bool{
         shouldBeTrue = false
         if location.x == box.position.x {
@@ -237,6 +239,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         return shouldBeTrue
     }
+    
+    func testThatCaughtBlockIncrementsScore() -> Bool{
+        shouldBeTrue = false
+        if blockHasSpawned != nil{
+            if blockSet.children.first?.name == "CaughtBlock" {
+                println("We made it")
+            }
+            
+        }
+        return shouldBeTrue
+    }
+
     
     func testThat() -> Bool{
         shouldBeTrue = false
@@ -249,7 +263,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
 
-    
+    func runRandomly(){
+        randomly = Int(arc4random_uniform(100))
+    }
     
     func setupBackground() {
         let background = SKSpriteNode(imageNamed: "background")
@@ -259,14 +275,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(background)
     }
     
-    
     func setupBlocks() {
         
         let spawn = SKAction.runBlock { () -> Void in
             self.spawnBlocks()
         }
         
-        let delay = SKAction.waitForDuration(spawnTime)
+        let delay = SKAction.waitForDuration(0.7)
+        
+        let spawnThenDelay = SKAction.sequence([spawn, delay])
+        
+        let spawnThenDelayForever = SKAction.repeatActionForever(spawnThenDelay)
+        
+        self.runAction(spawnThenDelayForever)
+        
+    }
+    
+    func setupAntiBlocks() {
+        let spawn = SKAction.runBlock { () -> Void in
+            self.spawnAntiBlocks()
+        }
+        
+        let delay = SKAction.waitForDuration(0.7)
         
         let spawnThenDelay = SKAction.sequence([spawn, delay])
         
@@ -274,10 +304,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.runAction(spawnThenDelayForever)
     }
-    
+
     func IncreaseSpawnRate(){
         if scoreCounter == 0 {
-            spawnTime = spawnTime - 0.1
             gravityValue = gravityValue + 0.1
             scoreCounter = 30
         }
@@ -295,14 +324,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         block.physicsBody?.categoryBitMask = blockCategory
         block.physicsBody?.contactTestBitMask = boxCategory | worldCategory
-//          block.physicsBody?.collisionBitMask = worldCategory | blockCategory | boxCategory
-//            block.physicsBody?.allowsRotation = false
+
         block.name = "LiveBlock"
         block.physicsBody?.restitution = 0.01
 //        self.addChild(block)
         blockSet.addChild(block)
 //        accessBlocks()
         blockHasSpawned = true
+    }
+    
+    func spawnAntiBlocks() {
+        if randomly == 1 {
+        antiBlock = SKSpriteNode(imageNamed: "antiBlock")
+        antiBlock.size = CGSizeMake((antiBlock.size.width / 2), (antiBlock.size.height / 2))
+        do {
+            columnMultiplier = (CGFloat(arc4random_uniform(100))) / 100
+        } while(columnMultiplier <= 0.3 || columnMultiplier >= 0.7)
+        
+        antiBlock.position = CGPointMake((columnMultiplier * self.frame.width), (self.frame.height + antiBlock.size.height))
+        antiBlock.physicsBody = SKPhysicsBody(rectangleOfSize: antiBlock.size)
+        
+        antiBlock.physicsBody?.categoryBitMask = blockCategory
+        antiBlock.physicsBody?.contactTestBitMask = boxCategory | worldCategory
+        antiBlock.name = "LiveAntiBlock"
+        antiBlock.physicsBody?.restitution = 0.01
+        antiBlockSet.addChild(antiBlock)
+        antiBlockHasSpawned = true
+        }
     }
     
     func setupGround() {
@@ -353,9 +401,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //            testThatBlockGeneratesWithinFrame()
 //            testThat30BlocksIsGameOver()
 //            testThat10BlocksIsLoseLife()
-            testThatHighScoreisMax()
+//            testThatHighScoreisMax()
 //            testThatCaughtBlockIncrementsPoints()
-            testThatBoxMovesToTouch()
+//            testThatBoxMovesToTouch()
 
         }
     }
@@ -386,7 +434,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(autoPlayButton)
     }
 
-    
     func setupScore() {
         score = 0
         scoreLabel = SKLabelNode(fontNamed: "Helvetica")
@@ -499,29 +546,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (( contact.bodyA.categoryBitMask & boxCategory ) == boxCategory || ( contact.bodyB.categoryBitMask & boxCategory ) == boxCategory)
             && (contact.bodyB.node?.frame.origin.y > contact.bodyA.node?.frame.minY && contact.bodyB.node?.frame.origin.y < contact.bodyA.node?.frame.maxY)
             && (contact.bodyB.node?.frame.origin.x > contact.bodyA.node?.frame.minX && contact.bodyB.node?.frame.origin.x < contact.bodyA.node?.frame.maxX) {
-            
-//            println("SCORE!")
-            
-            let delay = SKAction.waitForDuration(0.1)
-            let deleteBlock = SKAction.removeFromParent()
-            let fadeAway = SKAction.fadeOutWithDuration(0.1)
-            let delayThenFade = SKAction.sequence([delay,fadeAway])
-            let fadeThenDelete = SKAction.sequence([delayThenFade, deleteBlock])
-            
-            if ((contact.bodyB.node?.name == "LiveBlock") && (gameLose == false)) {
-                score = score + 1
-                scoreLabel.text = String(score)
-                updateHighScore()
-                scoreCounter = scoreCounter - 1
-                IncreaseSpawnRate()
-                contact.bodyB.node?.name = "CaughtBlock"
-                //            println(score)
-            }
-            contact.bodyB.node?.runAction(fadeThenDelete)
+                
+                
+                let delay = SKAction.waitForDuration(0.1)
+                let deleteBlock = SKAction.removeFromParent()
+                let fadeAway = SKAction.fadeOutWithDuration(0.1)
+                let delayThenFade = SKAction.sequence([delay,fadeAway])
+                let fadeThenDelete = SKAction.sequence([delayThenFade, deleteBlock])
+                
+                if ((contact.bodyB.node?.name == "LiveBlock") && (gameLose == false)) {
+                    score = score + 1
+                    scoreLabel.text = String(score)
+                    updateHighScore()
+                    scoreCounter = scoreCounter - 1
+                    IncreaseSpawnRate()
+                    contact.bodyB.node?.name = "CaughtBlock"
+
+                } else if ((contact.bodyB.node?.name == "LiveAntiBlock") && (gameLose == false)) {
+                    score = score - 1
+                    scoreLabel.text = String(score)
+                    updateHighScore()
+                    scoreCounter = scoreCounter - 1
+                    contact.bodyB.node?.name = "CaughtBlock"
+                }
+
+                contact.bodyB.node?.runAction(fadeThenDelete)
         } else if (contact.bodyA.categoryBitMask & worldCategory) == worldCategory || (contact.bodyB.categoryBitMask & worldCategory) == worldCategory {
             
 //            println("dead")
-            let delay = SKAction.waitForDuration(5)
+            let delay = SKAction.waitForDuration(3)
             let colorChange = SKAction.colorizeWithColor(UIColor(rgb: 0x222222), colorBlendFactor: 1.0, duration: 0.5)
             
             let deleteBlock = SKAction.removeFromParent()
@@ -597,12 +650,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         box.removeAllActions()
     }
     
-    
-    
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
         self.physicsWorld.gravity = CGVectorMake(0.0, -gravityValue)
         autoMoveBox()
+        runRandomly()
+        spawnAntiBlocks()
+        testThatCaughtBlockIncrementsScore()
+        
 
         
         
