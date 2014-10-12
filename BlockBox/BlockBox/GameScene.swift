@@ -521,6 +521,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // Clear blocks
         blockSet.removeAllChildren()
+        antiBlockSet.removeAllChildren()
         playAgain.removeFromParent()
         
         // Reset World
