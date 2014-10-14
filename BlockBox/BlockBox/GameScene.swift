@@ -22,7 +22,9 @@ var playAgain: SKSpriteNode!
 var autoPlayButton: SKSpriteNode!
 var blockSet: SKNode!
 var antiBlockSet: SKNode!
+var uncaughtSet: SKNode!
 var randomly = 0
+
 
 // Lables
 var scoreLabel: SKLabelNode!
@@ -72,15 +74,15 @@ extension UIColor {
     }
 }
 
-
+// Function to setup the game scene
 class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
         self.backgroundColor = UIColor.blackColor()
         self.physicsWorld.gravity = CGVectorMake(0.0, -gravityValue)
         self.physicsWorld.contactDelegate = self
+        
         setupBackground()
-  
         setupGround()
         setupBox()
         setupScore()
@@ -92,12 +94,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupAutoPlayButton()
         setupBlocks()
         
-
-        
         blockSet = SKNode()
         self.addChild(blockSet)
         antiBlockSet = SKNode()
         self.addChild(antiBlockSet)
+        uncaughtSet = SKNode()
+        self.addChild(uncaughtSet)
         
     }
 
@@ -142,8 +144,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func testThat30BlocksIsGameOver() -> Bool{
         shouldBeTrue = false
         if blockHasSpawned != nil{
-            if blockSet.children.first?.name == "DeadBlock"{
-            }
             if groundTouchCount == 30 && gameLose == true {
                 shouldBeTrue = true
                 println("Pass: Thirty blocks hit and game is over")
@@ -234,22 +234,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func testThatBoxMovesToTouch() -> Bool{
         shouldBeTrue = false
         if location.x == box.position.x {
-            println("Box moves to finger")
-            
+            println("Pass: Box moves to finger")
+    
         }
         return shouldBeTrue
     }
     
-    func testThatCaughtBlockIncrementsScore() -> Bool{
-        shouldBeTrue = false
-        if blockHasSpawned != nil{
-            if blockSet.children.first?.name == "CaughtBlock" {
-                println("We made it")
-            }
-            
-        }
-        return shouldBeTrue
-    }
+//    func testThatCaughtBlockIncrementsScore() -> Bool{
+//        shouldBeTrue = false
+//        if blockHasSpawned != nil{
+//            if blockSet.children.first?.name == "CaughtBlock" {
+//                println("Score should increment")
+//            }
+//            
+//        }
+//        return shouldBeTrue
+//    }
+    
+    
 
     
     func testThat() -> Bool{
@@ -259,14 +261,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         return shouldBeTrue
     }
-
     
-    
+    /*
+    func moveBlockToSet(){
+        if blockSet.children.first != nil && blockSet.children.first?.position.y < self.frame.height / 5 {
+            blockSet.childNodeWithName("LiveBlock")?.name = "UncaughtBlock"
+        }
+    }
+    */
+    // Random generation function used for AntiBlocks
 
     func runRandomly(){
         randomly = Int(arc4random_uniform(100))
     }
     
+    // Create the background Sprite Node
     func setupBackground() {
         let background = SKSpriteNode(imageNamed: "background")
         background.position = CGPointMake(self.frame.width / 2, self.frame.height / 2)
@@ -275,6 +284,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(background)
     }
     
+    // Create the blocks Sprite Node
     func setupBlocks() {
         
         let spawn = SKAction.runBlock { () -> Void in
@@ -291,6 +301,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    // Create the AntiBlocks Sprite Node
     func setupAntiBlocks() {
         let spawn = SKAction.runBlock { () -> Void in
             self.spawnAntiBlocks()
@@ -305,6 +316,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.runAction(spawnThenDelayForever)
     }
 
+    // Increase the gravity with caught blocks
     func IncreaseSpawnRate(){
         if scoreCounter == 0 {
             gravityValue = gravityValue + 0.1
@@ -312,6 +324,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    // Spawn Blocks
     func spawnBlocks() {
         block = SKSpriteNode(imageNamed: "block")
         block.size = CGSizeMake((block.size.width / 2), (block.size.height / 2))
@@ -333,6 +346,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         blockHasSpawned = true
     }
     
+    // Spawn the AntiBlocks
     func spawnAntiBlocks() {
         if randomly == 1 {
         antiBlock = SKSpriteNode(imageNamed: "antiBlock")
@@ -353,6 +367,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    // Create the ground Sprite Node
     func setupGround() {
         ground = SKSpriteNode(imageNamed: "ground")
         ground.size = CGSizeMake(self.frame.width, ground.frame.height / 2)
@@ -368,6 +383,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(ground)
     }
     
+    // Create the box Sprite Node
     func setupBox() -> CGPoint{
         box = SKSpriteNode(imageNamed: "box")
         box.size = CGSizeMake(box.size.width / 2, box.size.height / 2)
@@ -384,10 +400,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return box.position
     }
     
+    // Game automation and Testing Suite
     func autoMoveBox() {
         if autoPlay && blockHasSpawned != nil {
             // human error addition
-            var randomly = (Int(arc4random_uniform(50)))
+            var randomly = (Int(arc4random_uniform(20)))
             var blockPosition = block.position.x
             if randomly == 1 {
                 let moveDelay = SKAction.waitForDuration(1.8)
@@ -396,19 +413,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 box.runAction(moveDelayThenGo)
 
             }
-            // Run Tests
-//            testThatBlockisDead()
-//            testThatBlockGeneratesWithinFrame()
-//            testThat30BlocksIsGameOver()
-//            testThat10BlocksIsLoseLife()
-//            testThatHighScoreisMax()
-//            testThatCaughtBlockIncrementsPoints()
-//            testThatBoxMovesToTouch()
+//            Run Tests
+            testThatBlockisDead()
+            testThatBlockGeneratesWithinFrame()
+            testThat30BlocksIsGameOver()
+            testThat10BlocksIsLoseLife()
+            testThatHighScoreisMax()
+            testThatBoxMovesToTouch()
 
         }
     }
 
-    
+    // Create Play Again Button 
     func setupPlayAgain() {
         playAgain = SKSpriteNode(imageNamed: "playAgain")
         playAgain.size = CGSizeMake(playAgain.size.width / 2, playAgain.size.height / 2)
@@ -423,6 +439,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(playAgain)
     }
     
+    // Create Automation Button
     func setupAutoPlayButton() {
         autoPlayButton = SKSpriteNode(imageNamed: "autoPlay")
         autoPlayButton.size = CGSizeMake(autoPlayButton.size.width, autoPlayButton.size.height)
@@ -434,6 +451,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(autoPlayButton)
     }
 
+    // Create Score label
     func setupScore() {
         score = 0
         scoreLabel = SKLabelNode(fontNamed: "Helvetica")
@@ -445,6 +463,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(scoreLabel)
     }
     
+    // Create High Score Label
     func setupHighScore() {
         if highScore <= score {
             highScore = score
@@ -458,6 +477,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(highScoreLabel)
     }
     
+    // Function for updating the high score
     func updateHighScore() {
         if highScore <= score {
             highScore = score
@@ -465,10 +485,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    // Create Lives Counter
     func setupLives(){
         lives = 30
     }
     
+    // Switch function for removing lives
     func updateLives(){
         switch lives {
         case 20:
@@ -489,7 +511,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
-    // Display Lives
+    // Create Lives "Hearts" Sprite Nodes
     func setupHeart1() {
         heart1 = SKSpriteNode(imageNamed: "life")
         heart1.size = CGSizeMake(heart1.size.width / 2, heart1.size.height / 2)
@@ -543,6 +565,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameLose = false
     }
     
+    // Function to handle object contact
     func didBeginContact(contact: SKPhysicsContact) {
         if (( contact.bodyA.categoryBitMask & boxCategory ) == boxCategory || ( contact.bodyB.categoryBitMask & boxCategory ) == boxCategory)
             && (contact.bodyB.node?.frame.origin.y > contact.bodyA.node?.frame.minY && contact.bodyB.node?.frame.origin.y < contact.bodyA.node?.frame.maxY)
@@ -574,7 +597,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 contact.bodyB.node?.runAction(fadeThenDelete)
         } else if (contact.bodyA.categoryBitMask & worldCategory) == worldCategory || (contact.bodyB.categoryBitMask & worldCategory) == worldCategory {
             
-//            println("dead")
             let delay = SKAction.waitForDuration(3)
             let colorChange = SKAction.colorizeWithColor(UIColor(rgb: 0x222222), colorBlendFactor: 1.0, duration: 0.5)
             
@@ -604,6 +626,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     }
     
+    // Functions to handle touches
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         /* Called when a touch begins */
         
@@ -651,16 +674,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         box.removeAllActions()
     }
     
+    // Function to update frame methods
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
         self.physicsWorld.gravity = CGVectorMake(0.0, -gravityValue)
         autoMoveBox()
         runRandomly()
         spawnAntiBlocks()
-        testThatCaughtBlockIncrementsScore()
-        
-
-        
+//        testThatCaughtBlockIncrementsScore()
+        //moveBlockToSet()
         
     }
 }
